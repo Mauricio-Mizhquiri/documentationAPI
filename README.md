@@ -264,7 +264,7 @@ EL Token se envia directamente en los parametros del header
 
 ---
 
-### **Parte 4: Respuesta Exitosa**
+### **Respuesta Exitosa**
 
 
 #### **Respuesta Exitosa (200 OK)**
@@ -316,7 +316,7 @@ Si la solicitud es exitosa y el usuario es encontrado, el sistema devuelve la in
 
 
 
-### **Parte 5: Respuestas de Error**
+### **Respuestas de Error**
 
 #### **Respuestas de Error**
 
@@ -367,7 +367,7 @@ Si ocurre un error inesperado en el servidor.
 
 ---
 
-### **Parte 6: Excepciones Comunes y Códigos de Estado**
+### **Excepciones Comunes y Códigos de Estado**
 
 #### **Excepciones Comunes:**
 
@@ -440,7 +440,7 @@ Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
-### **Parte 4: Respuesta Exitosa**
+### **Respuesta Exitosa**
 
 ```markdown
 #### **Respuesta Exitosa (200 OK)**
@@ -536,7 +536,7 @@ Si la solicitud es exitosa y el usuario tiene productos asociados, el sistema de
 
 ---
 
-### **Parte 5: Respuestas de Error**
+### **Respuestas de Error**
 
 #### **Respuestas de Error**
 
@@ -626,7 +626,7 @@ Si ocurre un error inesperado en el servidor.
 
 ---
 
-### **Parte 6: Excepciones Comunes y Códigos de Estado**
+### **Excepciones Comunes y Códigos de Estado**
 
 #### **Excepciones Comunes:**
 
@@ -667,6 +667,213 @@ Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 
+### 5.1.3. Consultar Movimientos
+
+#### Descripción
+
+Este endpoint obtiene los movimientos de los productos que los requiera.
+
+
+#### Detalles del Endpoint
+
+*   **Método HTTP:** `GET`
+*   **URL:** `http://190.123.34.157:8000/movimientos` 
+*   **Token:** Requiere token JWT en el [Header común de la API].
+*   **Formato de Respuesta:** `application/json`
+
+#### Parámetros de Solicitud
+
+*   **Header:** Ver la definición en [Header común de la API].  El Header debe incluir el token JWT para la autenticación.
+*   **Query Parameters:**
+
+    | Nombre          | Tipo     | Descripción                                                                                                      | Obligatorio | Ejemplo      |
+    |-----------------|----------|------------------------------------------------------------------------------------------------------------------|-------------|--------------|
+    | `codCuenta`     | `long`    | Identificación de la cuenta.  Se debe mandar en el header.                                                             | Sí          | `1`  |
+    | `codProducto`   | `long`    | Identificación del producto.  Se debe mandar como parametro en el header.                                                               | Sí          | `1`        |
+    | `fechaInicio`   | `string` | Fecha de inicio para la consulta de movimientos (formato: `YYYY-MM-DD`). Se debe mandar como parametro en el header.        | Sí          | `2024-01-01` |
+    | `fechaFin`      | `string` | Fecha de fin para la consulta de movimientos (formato: `YYYY-MM-DD`). Se debe mandar como parametro en el header.           | Sí          | `2024-01-31` |
+
+#### Ejemplo de Solicitud
+
+**Header:**  (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:**
+http://190.123.34.157:8000/movimientos
+
+
+**Nota:** El `codCuenta`,`codProducto`,`fechaInicio`,`fechaFin` se extrae de los parámetros que se envián en el header.
+
+
+#### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene una lista de movimientos.  Cada movimiento tendrá al menos los siguientes campos:
+
+| Nombre          | Tipo     | Descripción                                                                 |
+|-----------------|----------|-----------------------------------------------------------------------------|
+| `transaccion`   | `string` | Tipo de transacción (Débito/Crédito)                                        |
+| `concepto`      | `string` | Concepto de la transacción                                                  |
+| `fecha`         | `string` | Fecha de la transacción                                                     |
+| `hora`          | `string` | Hora de la transacción                                                      |
+| `fechaSistema`  | `string` | Fecha en que se registró la transacción en el sistema                      |
+| `usuario`       | `string` | Usuario que realizó la transacción                                           |
+| `id_transaccion`| `string` | Identificador único de la transacción                                        |
+| `valor`         | `number` | Valor de la transacción                                                     |
+| `saldo`         | `number` | Saldo después de la transacción                                            |
+| `comprobante`   | `string` | Información del comprobante (si está disponible)                             |
+
+
+
+#### Ejemplo de Respuesta Exitosa
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obteneción de movimientos",
+        "fechaMsj": "2025-02-19T22:45:24.973004500",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Movimientos obtenidos con éxito",
+        "data": [
+            {
+                "transaccion": "NC",
+                "concepto": "INTERES AHORRO A LA VISTA",
+                "fecha": "2023-01-31T05:00:00.000+00:00",
+                "hora": "2023-02-01T04:59:59.000+00:00",
+                "fechaSistema": "2023-02-01T13:19:40.245+00:00",
+                "usuario": "DAISI ABARCA",
+                "valor": 0.03,
+                "saldo": 59.75,
+                "idTransaccion": 77077,
+                "comprobante": null
+            },
+            {
+                "transaccion": "NC",
+                "concepto": "INTERES AHORRO A LA VISTA",
+                "fecha": "2023-01-31T05:00:00.000+00:00",
+                "hora": "2023-02-01T04:59:59.000+00:00",
+                "fechaSistema": "2023-02-01T13:19:40.245+00:00",
+                "usuario": "DAISI ABARCA",
+                "valor": 0.03,
+                "saldo": 59.75,
+                "idTransaccion": 77077,
+                "comprobante": null
+            },
+
+            ........
+            ........
+            ........
+  ]
+}
+```
+---
+
+
+
+**.  Respuestas de Error**
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Si alguno de los parámetros `codCuenta`, `codProducto`, `fechaInicio`, o `fechaFin` no es proporcionado o tiene un formato incorrecto.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de movimientos",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Parámetros de solicitud inválidos: fechaInicio tiene un formato incorrecto",
+        "data": null
+    },
+    "message": "Parámetros de solicitud inválidos: fechaInicio tiene un formato incorrecto",
+    "status": 400
+}
+```
+
+#### 500 Internal Server Error - Error al obtener los movimientos
+
+Si ocurre un error inesperado en el servidor al intentar obtener los movimientos.
+
+**Ejemplo de Respuesta de Error:**
+
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de movimientos",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al obtener los movimientos: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al obtener los movimientos: Error en la base de datos",
+    "status": 500
+}
+```
+
+#### Códigos de Estado HTTP
+
+*   `200 OK`: Movimientos obtenidos correctamente.
+*   `400 Bad Request`: Parámetros de solicitud inválidos.
+*   `500 Internal Server Error`: Error al obtener los movimientos.
+
+
+
+*** Excepciones Comunes y Códigos de Estado**
+
+---
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                              |
+|------------|---------------------------------------------|--------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | Parámetros de solicitud inválidos                                           |
+| 500        | Error interno del servidor                 | Error al obtener los movimientos                                             |
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                    |
+|----------------------|------------------------------------|
+| 200 OK               | Movimientos obtenidos correctamente |
+| 400 Bad Request      | Parámetros de solicitud inválidos  |
+| 500 Internal Server Error | Error al obtener los movimientos   |
+
+
+
+#### Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   Las fechas deben estar en formato `YYYY-MM-DD`.
+
+
+
+---
+
+###  Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codCuenta: 1
+codProducto: 1
+fechaInicio: 2024-01-01
+fechaFin: 2024-01-31
+```
+
+
 ### **5.1.4. Tabla de Amortización Original**
 
 ---
@@ -677,12 +884,12 @@ Este endpoint obtiene la tabla de amortización de un crédito específico. Devu
 
 ---
 
-### **GET /amortization**
+### **GET /amortizacion**
 
 #### **Detalles del Endpoint**
 
 - **Método HTTP:** `GET`
-- **URL:** `http://190.123.34.157:8000/amortization`
+- **URL:** `http://190.123.34.157:8000/amortizacion`
 - **Autorización:** Requiere autenticación a través de un encabezado con token JWT.
   
 ---
@@ -767,7 +974,7 @@ Si la solicitud es exitosa, el sistema devolverá la tabla de amortización corr
     }
 }
 ```
-### **Parte 5: Respuestas de Error**
+### **Respuestas de Error**
 
 #### **Respuestas de Error**
 
@@ -830,7 +1037,7 @@ Si ocurre un error inesperado en el servidor.
     "status": 500
 }
 ```
-### **Parte 6: Excepciones Comunes y Códigos de Estado**
+### **Excepciones Comunes y Códigos de Estado**
 
 #### **Excepciones Comunes:**
 
@@ -880,7 +1087,7 @@ Este endpoint obtiene la tabla de amortización calculada para un crédito espec
 
 ---
 
-### **GET /amortizacion-calculada**
+### **GET /amortizacionCalculada**
 
 #### **Detalles del Endpoint**
 
@@ -1047,6 +1254,810 @@ idCredito: 12345
 
 
 
+
+
+### 5.1.6. Tabla de detalle de ahorro programado
+
+---
+
+### Descripción
+
+Este endpoint obtiene la tabla de cuotas de un ahorro programado específico.
+
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `GET`
+*   **URL:** `http://190.123.34.157:8000/ahorroProgramado`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y el `id_ahorro_programado` también en el Header.
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además el siguiente parámetro:
+
+    | Nombre                  | Tipo     | Descripción                                                                                             | Obligatorio | Ejemplo       |
+    |-------------------------|----------|---------------------------------------------------------------------------------------------------------|-------------|---------------|
+    | `idAhorroProgramado`    | `long`   | Identificador del ahorro programado para obtener la tabla de cuotas. | Sí          | `12345`         |
+
+📌 **Ejemplo de Header en la Solicitud:**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+idAhorroProgramado: 12345
+```
+
+
+**Ejemplo de Solicitud**
+
+
+
+
+---
+
+### Ejemplo de Solicitud
+
+**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:**
+
+http://190.123.34.157:8000/ahorroProgramado
+
+**Nota:** El `idAhorroProgramado` se extrae del parámetro que se envía en el header.
+
+
+
+---
+
+### Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si la solicitud es exitosa, el sistema devolverá la lista de cuotas del ahorro programado solicitada.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene una lista de cuotas. Cada cuota tendrá al menos los siguientes campos:
+
+| Nombre             | Tipo        | Descripción                                                                                     |
+|--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| `numero`           | `integer`   | Número de la cuota                                                                              |
+| `fecha`            | `string`    | Fecha de vencimiento de la cuota                                                                |
+| `valorCuota`       | `number`    | Valor de la cuota                                                                               |
+| `montoAcumulado`   | `number`    | Monto acumulado hasta la fecha                                                                   |
+| `interes`          | `number`    | Interés generado por la cuota                                                                   |
+| `seguro`           | `number`    | Valor del seguro (si aplica)                                                                     |
+| `total`            | `number`    | Valor total de la cuota (valorCuota + interes + seguro)                                           |
+| `valorRecaudado`   | `number`    | Valor que realmente se ha pagado                                                                |
+| `fechaRecaudado`   | `string`    | Fecha en la que se recaudó el dinero                                                              |
+| `estado`           | `string`    | Estado de la cuota (ej: "Pendiente", "Pagada")                                                    |
+
+
+---
+
+### Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de cuotas ahorro programado",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "DATOS ENVIADOS",
+        "data": [
+            {
+                "numero": 1,
+                "fecha": "2024-03-01",
+                "valorCuota": 100.00,
+                "montoAcumulado": 100.00,
+                "interes": 0.50,
+                "seguro": 0.00,
+                "total": 100.50,
+                "valorRecaudado": 100.50,
+                "fechaRecaudado": "2024-03-01",
+                "estado": "P"
+            },
+            {
+                "numero": 2,
+                "fecha": "2024-04-01",
+                "valorCuota": 100.00,
+                "montoAcumulado": 200.00,
+                "interes": 0.50,
+                "seguro": 0.00,
+                "total": 100.50,
+                "valorRecaudado": 0.00,
+                "fechaRecaudado": null,
+                "estado": "C"
+            }
+            //..., mas cuotas
+        ]
+    }
+}
+```
+
+
+
+
+---
+
+### Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - ID de ahorro programado no proporcionado
+
+Si el `idAhorroProgramado` no es proporcionado en el header.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de cuotas ahorro programado",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "ID de ahorro programado no proporcionado en el header personalizado",
+        "data": null
+    },
+    "message": "ID de ahorro programado no proporcionado en el header personalizado",
+    "status": 400
+}
+
+```
+
+#### 400 Bad Request - Formato de ID de ahorro programado inválido
+
+Si el `idAhorroProgramado` tiene un formato inválido.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de cuotas ahorro programado",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Formato de ID de ahorro programado inválido en el header personalizado",
+        "data": null
+    },
+    "message": "Formato de ID de ahorro programado inválido en el header personalizado",
+    "status": 400
+}
+
+```
+
+#### 500  Internal Server Error - Error al obtener las cuotas del ahorro programado
+
+Si ocurre un error inesperado en el servidor al intentar obtener las cuotas.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtención de cuotas ahorro programado",
+        "fechaMsj": "2025-02-20T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al obtener las cuotas del ahorro programado: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al obtener las cuotas del ahorro programado: Error en la base de datos",
+    "status": 500
+}
+
+```
+
+
+
+
+**Excepciones Comunes y Códigos de Estado**
+
+---
+
+### Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                              |
+|------------|---------------------------------------------|--------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | ID de ahorro programado no proporcionado o formato inválido              |
+| 500        | Error interno del servidor                 | Error al obtener las cuotas del ahorro programado                         |
+
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                                      |
+|----------------------|------------------------------------------------------|
+| 200 OK               | Cuotas del ahorro programado obtenidas correctamente |
+| 400 Bad Request      | ID de ahorro programado no proporcionado o formato inválido |
+| 500 Internal Server Error | Error al obtener las cuotas del ahorro programado   |
+
+
+---
+
+### Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   El `idAhorroProgramado` debe ser un número entero válido.
+*   El `idAhorroProgramado` debe ser enviado en el header de la petición
+
+
+---
+
+### Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+idAhorroProgramado: 4
+```
+
+
+
+### 5.2.1. Validar beneficiario interno
+
+---
+
+### Descripción
+
+Valida si una cuenta interna existe, en caso de existir, devuelve los datos de esta.
+
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `GET`
+*   **URL:** `http://190.123.34.157:8000/beneficiarios`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y los parámetros de búsqueda también en el Header.
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
+
+    | Nombre          | Tipo     | Descripción                                                                                                  | Obligatorio | Ejemplo        |
+    |-----------------|----------|--------------------------------------------------------------------------------------------------------------|-------------|----------------|
+    | `codProducto`    | `long`   | Código del producto a validar.                                                                            | Sí          | `1`            |
+    | `codCuenta`      | `long`   | Número de cuenta a validar.                                                                                | Sí          | `1234567890`   |
+    | `numeroIdentificacion` | `string` | Número de Identificación del socio a validar (alternativo a codCuenta y codProducto). | No | `1723456789`|
+    | `celular` | `string` | Número de celular del socio a validar (alternativo a codCuenta y codProducto). | No | `0999999999` |
+
+📌 **Ejemplo de Header en la Solicitud (Búsqueda por CodProducto y CodCuenta):**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 1234567890
+```
+
+
+**Ejemplo de Solicitud**
+
+---
+### Ejemplo de Solicitud
+
+**Ejemplo de URL:**
+http://190.123.34.157:8000/beneficiarios
+
+
+**Nota:** El `codProducto` y `codCuenta`, se extraen de los parámetros que se envían en el header.
+
+
+---
+
+### Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si la solicitud es exitosa, el sistema devolverá la información del beneficiario interno.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información del beneficiario interno:
+
+| Nombre                  | Tipo        | Descripción                                                                         |
+|-------------------------|-------------|-------------------------------------------------------------------------------------|
+| `nombreSocio`           | `string`    | Nombre del socio                                                                    |
+| `identificacionSocio`   | `string`    | Número de identificación del socio                                                    |
+| `email`                 | `string`    | Dirección de correo electrónico del socio                                            |
+| `tipoCuenta`            | `string`    | Tipo de cuenta del socio                                                              |
+| `celular`               | `string`    | Número de celular del socio                                                           |
+| `aceptaCreditos`        | `integer`   | Indica si el socio acepta créditos (1: Sí, 0: No)                                      |
+| `aceptaDebitos`         | `integer`   | Indica si el socio acepta débitos (1: Sí, 0: No)                                       |
+
+
+---
+
+### Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "validación beneficiario interno",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Beneficiario encontrado",
+        "data": {
+            "nombreSocio": "Juan Pérez",
+            "identificacionSocio": "1717171717",
+            "email": "juan.perez@example.com",
+            "tipoCuenta": "Ahorros",
+            "celular": "0999999999",
+            "aceptaCreditos": 1,
+            "aceptaDebitos": 0
+        }
+    }
+}
+```
+
+---
+
+### Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Si `codProducto` o `codCuenta` no son proporcionados en el header, o si el formato de los números es inválido.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "validación beneficiario interno",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "codProducto y codCuenta deben estar presentes en el encabezado",
+        "data": null
+    },
+    "message": "codProducto y codCuenta deben estar presentes en el encabezado",
+    "status": 400
+}
+
+```
+
+#### 404 Not Found - Beneficiario interno no encontrado
+
+Si no se encuentra el beneficiario interno con los parámetros proporcionados.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "validación beneficiario interno",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "404",
+        "mensajeFrontal": "Beneficiario interno no encontrado",
+        "data": null
+    },
+    "message": "Beneficiario interno no encontrado",
+    "status": 404
+}
+
+```
+
+#### 500 Internal Server Error - Error al validar beneficiario interno
+
+Si ocurre un error inesperado en el servidor al intentar validar el beneficiario interno.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "validación beneficiario interno",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al validar beneficiario interno: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al validar beneficiario interno: Error en la base de datos",
+    "status": 500
+}
+
+
+```
+
+
+**Excepciones Comunes y Códigos de Estado**
+
+---
+
+### Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                                               |
+|------------|---------------------------------------------|-------------------------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | `codProducto` o `codCuenta` no proporcionados o formato inválido, o parámetros alternativos no proporcionados |
+| 404        | Beneficiario no encontrado                   | Beneficiario interno no encontrado                                                           |
+| 500        | Error interno del servidor                 | Error al validar beneficiario interno                                                         |
+
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                                      |
+|----------------------|------------------------------------------------------|
+| 200 OK               | Beneficiario interno validado correctamente           |
+| 400 Bad Request      | `codProducto` o `codCuenta` no proporcionados o formato inválido |
+| 404 Not Found          | Beneficiario interno no encontrado                   |
+| 500 Internal Server Error | Error al validar beneficiario interno                |
+
+---
+
+### Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   Se debe proporcionar `codProducto` y `codCuenta` en el header.
+
+---
+
+### Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud (Ejemplo con codProducto y codCuenta):
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 1234567890
+```
+
+
+
+### 5.3. Transferencias
+
+---
+
+### 5.3.1. Registrar transferencia interna
+
+---
+
+### Descripción
+
+Registra una transferencia interna.
+
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `POST`
+*   **URL:** `http://190.123.34.157:8000/transferencias`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y los datos de la transferencia como Headers adicionales.
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
+
+    | Nombre                    | Tipo         | Descripción                                                                                                 | Obligatorio | Ejemplo            |
+    |---------------------------|--------------|-------------------------------------------------------------------------------------------------------------|-------------|--------------------|
+    | `codProducto`           | `long`       | Código del producto de destino.                                                                             | Sí          | `1`                |
+    | `montoTransferir`           | `decimal`      | Monto para transferir.                                                                                        | Sí          | `100.00`           |
+    | `fechaContable`           | `string`       | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                                   | Sí          | `2024-02-22`       |
+    | `cuentaOrigen`          | `long`      | Número de cuenta del origen.                                                                                  | Sí          | `1234567890`       |
+    | `cuentaDestino`          | `long`      | Número de cuenta del beneficiario (destino).                                                                 | Sí          | `9876543210`       |
+
+📌 **Ejemplo de Header en la Solicitud:**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+montoTransferir: 100.00
+fechaContable: 2024-02-22
+cuentaOrigen: 1
+cuentaDestino: 2
+```
+
+
+
+**Ejemplo de Solicitud**
+
+---
+
+### Ejemplo de Solicitud
+
+**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:**
+
+http://190.123.34.157:8000/transferencias
+
+
+
+**Nota:** Los datos de la transferencia (`codProducto`, `montoTransferir`, `fechaContable`, `cuentaOrigen`, `cuentaDestino`) se extraen de los parámetros que se envían en el header.
+
+---
+
+### Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si la solicitud es exitosa, el sistema devolverá la información de confirmación de la transferencia.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información de confirmación de la transferencia:
+
+| Nombre                        | Tipo        | Descripción                                                                                            | Ejemplo                      |
+|-------------------------------|-------------|--------------------------------------------------------------------------------------------------------|------------------------------|
+| `numeroDocumentoTransaccion`  | `string`    | Número de documento de la transacción realizada.                                                        | `TRANS-20240220-0001`        |
+| `fechaContable`               | `string`    | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                              | `2024-02-22`                 |
+| `estadoRetornoDebito`         | `integer`   | Estado de retorno de la función de débito (1: Éxito, otros valores indican error).                    | `1`                          |
+| `estadoRetornoCredito`        | `integer`   | Estado de retorno de la función de crédito (1: Éxito, otros valores indican error).                   | `1`                          |
+| `mensajeError`                | `string`    | Mensaje de error si el estadoRetorno es diferente de 1.                                                 | `null`                       |
+
+---
+
+### Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "registro transferencia interna",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Transferencia realizada con éxito",
+        "data": {
+            "numeroDocumentoTransaccion": "TRANS-20240220-0001",
+            "fechaContable": "2024-02-22",
+            "estadoRetornoDebito": 1,
+            "estadoRetornoCredito": 1,
+            "mensajeError": null
+        }
+    }
+}
+```
+
+---
+
+### Descripción de los Códigos de Error
+
+La función de transferencia puede retornar códigos de error numéricos específicos en el campo `codigo` de la respuesta y en el campo `estadoRetornoDebito` (o `estadoRetornoCredito`) del objeto `data`. A continuación, se describe el significado de cada código:
+
+| Código | Descripción                                      |
+|--------|--------------------------------------------------|
+| -2     | Cuenta no encontrada                             |
+| -3     | Saldo insuficiente                               |
+| -4     | No se pudo obtener la fecha                       |
+| -5     | No existe caja                                   |
+| -6     | No es posible actualizar el saldo en la cuenta   |
+| -7     | El monto a Retirar excede el limite permitido   |
+| -8     | No es posible actualizar el número de la transacción |
+| -9     | No existe transacción                             |
+| -10    | No es posible grabar la transacción              |
+| -11    | No es posible grabar la transacción              |
+| -12    | No es posible grabar el saldo en el detalle de la transacción |
+
+---
+
+###  Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). 
+
+Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Si alguno de los parámetros (`codProducto`, `montoTransferir`, `fechaContable`, `cuentaOrigen`, `cuentaDestino`) no es proporcionado o tiene un formato incorrecto.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "registro transferencia interna",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Formato de número inválido para los parámetros",
+        "data": null
+    },
+    "message": "Formato de número inválido para los parámetros",
+    "status": 400
+}
+
+```
+#### 500 Internal Server Error - Error al realizar la transferencia (Errores de la función)
+
+Si ocurre un error inesperado en el servidor o si la función de transferencia retorna un error específico (saldo insuficiente, cuenta no encontrada, etc.).
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "registro transferencia interna",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "-2",
+        "mensajeFrontal": "Cuenta no encontrada",
+        "data": {
+            "numeroDocumentoTransaccion": null,
+            "fechaContable": null,
+            "estadoRetornoDebito": -2,
+            "estadoRetornoCredito": null,
+            "mensajeError": "Cuenta no encontrada"
+        }
+    },
+    "message": "Cuenta no encontrada",
+    "status": 500
+}
+
+```
+
+#### 500 Internal Server Error - Error al realizar la transferencia (Errores de la función)
+Si ocurre un error inesperado en el servidor o si la función de transferencia retorna un error específico (saldo insuficiente, cuenta no encontrada, etc.).
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "registro transferencia interna",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "-3",
+        "mensajeFrontal": "Saldo insuficiente",
+        "data": {
+            "numeroDocumentoTransaccion": null,
+            "fechaContable": null,
+            "estadoRetornoDebito": -3,
+            "estadoRetornoCredito": null,
+            "mensajeError": "Saldo insuficiente"
+        }
+    },
+    "message": "Saldo insuficiente",
+    "status": 500
+}
+
+```
+
+#### 500 Ejemplo de Respuesta de Error (Error Interno)
+Si ocurre un error inesperado en el servidor 
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "registro transferencia interna",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al realizar la transferencia: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al realizar la transferencia: Error en la base de datos",
+    "status": 500
+}
+
+```
+
+
+
+**Excepciones Comunes y Códigos de Estado**
+
+---
+
+###  Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                                               |
+|------------|---------------------------------------------|-------------------------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | Parámetros no proporcionados o formato inválido                                                                        |
+| (Código de error función) | Error función de transferencia   | Mensaje de error específico de la función (ver la sección "Descripción de los Códigos de Error")                   |
+| 500        | Error interno del servidor                 | Error al realizar la transferencia                                                         |
+
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                                      |
+|----------------------|------------------------------------------------------|
+| 200 OK               | Transferencia interna registrada correctamente        |
+| 400 Bad Request      | Parámetros no proporcionados o formato inválido |
+| 500 Internal Server Error | Error al realizar la transferencia |
+
+
+---
+
+###  Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   Todos los datos de la transferencia (`codProducto`, `montoTransferir`, `fechaContable`, `cuentaOrigen`, `cuentaDestino`) deben ser enviados en el header de la petición.
+*   La fecha debe estar en formato `YYYY-MM-DD`.---
+
+
+
+
+---
+
+### Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+montoTransferir: 100.00
+fechaContable: 2024-02-22
+cuentaOrigen: 1
+cuentaDestino: 2
+```
+
+
+
+
+
 ### **5.4.1. Listar IFIs**
 
 ---
@@ -1185,3 +2196,488 @@ Cuando se haga una solicitud a este endpoint, recuerda incluir el token de auten
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
+
+
+
+
+
+
+
+
+
+
+---
+
+### 5.4.2. Obtener comisión
+
+---
+
+### Descripción
+
+Obtiene la comisión basada en el código de transacción.
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `GET`
+*   **URL:** `http://190.123.34.157:8000/comisiones`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición. No recibe parámetros adicionales en el Header ni en la URL.  
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación.
+
+
+---
+
+### Ejemplo de Solicitud
+
+**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:** 
+
+http://190.123.34.157:8000/comisiones
+
+
+
+**Nota:** Este endpoint no requiere parámetros adicionales en el Header o en la URL.
+
+
+
+
+---
+
+### Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si la solicitud es exitosa, el sistema devolverá la información de la comisión.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene una lista de comisiones (aunque normalmente solo habrá una). Cada comisión tendrá los siguientes campos:
+
+| Nombre          | Tipo        | Descripción                                                                           | Ejemplo                |
+|-----------------|-------------|---------------------------------------------------------------------------------------|------------------------|
+| `codigo`       | `string`    | Código de la comisión.                                                                | `001`                  |
+| `descripcion`  | `string`    | Descripción de la comisión.                                                           | `comisión transferencia` |
+| `valor`        | `number`    | Valor de la comisión.                                                                 | `2.50`                 |
+
+
+---
+
+###  Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": [
+            {
+                "codigo": "C",
+                "descripcion": "Comision Consultas",
+                "valor": 0.30
+            },
+            {
+                "codigo": "T",
+                "descripcion": "Comision Transferencias",
+                "valor": 0.50
+            }
+        ]
+}
+
+```
+
+
+
+---
+
+###  Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Este error podría ocurrir si se esperara algún parámetro (aunque el código actual no lo requiere).
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtener comision",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Invalid request parameters",
+        "data": null
+    },
+    "message": "Invalid request parameters",
+    "status": 400
+}
+```
+
+#### 500 Internal Server Error - Error obteniendo la comisión
+
+Si ocurre un error inesperado en el servidor al intentar obtener la comisión.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "obtener comision",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error obteniendo la comisión: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error obteniendo la comisión: Error en la base de datos",
+    "status": 500
+}
+```
+
+
+**Excepciones Comunes y Códigos de Estado**
+
+---
+
+### Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                                               |
+|------------|---------------------------------------------|-------------------------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | Parámetros de solicitud inválidos (si se implementaran)                                                                        |
+| 500        | Error interno del servidor                 | Error obteniendo la comisión                                                         |
+
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                                      |
+|----------------------|------------------------------------------------------|
+| 200 OK               | Comisión obtenida correctamente                       |
+| 400 Bad Request      | Parámetros de solicitud inválidos (si se implementaran) |
+| 500 Internal Server Error | Error al obtener la comisión |
+
+
+---
+
+###  Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   El código de comisión (ejemplo: 001 comisión de transferencias SPI) para obtener la comisión se debe configurar directamente en el servicio (backend).
+
+---
+
+###  Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+
+
+
+### 5.5.  Operaciones de Cuenta
+
+---
+
+### 5.5.1. Débito
+
+---
+
+### Descripción
+
+Realiza un débito en la cuenta del socio.
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `POST`
+*   **URL:** `http://190.123.34.157:8000/debitos`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y los datos del débito como atributos en el Header.
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
+
+    | Nombre            | Tipo      | Descripción                                                                                                  | Obligatorio | Ejemplo            |
+    |-------------------|-----------|--------------------------------------------------------------------------------------------------------------|-------------|--------------------|
+    | `codProducto`    | `long`    | Código del producto al cual se va a realizar el débito.                                                     | Sí          | `1`                |
+    | `codCuenta`      | `long`    | Número de cuenta a la cual se realizará el débito.                                                           | Sí          | `1234567890`       |
+    | `valorRetiro`     | `decimal` | Monto a debitar.                                                                                             | Sí          | `100.00`           |
+    | `fecha`           | `string`  | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                                   | Sí          | `2024-02-22`       |
+
+📌 **Ejemplo de Header en la Solicitud:**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 1234567890
+valorRetiro: 100.00
+fecha: 2024-02-22
+```
+
+
+**Ejemplo de Solicitud**
+
+---
+
+### Ejemplo de Solicitud
+
+**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:**
+
+http://190.123.34.157:8000/debitos
+
+
+
+**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) se extraen de los parámetros que se envían en el header.
+
+---
+
+###  Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si la solicitud es exitosa, el sistema devolverá la información de confirmación del débito.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información de confirmación del débito:
+
+| Nombre                        | Tipo        | Descripción                                                                                            | Ejemplo                      |
+|-------------------------------|-------------|--------------------------------------------------------------------------------------------------------|------------------------------|
+| `numeroDocumentoTransaccion`  | `string`    | Número de documento de la transacción realizada.                                                        | `NDSPI-20240220-0001`      |
+| `fechaContable`               | `string`    | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                              | `2024-02-20`                 |
+| `estadoRetorno`         | `integer`   | Estado de retorno de la función (1: Éxito, otros valores indican error).                                | `1`                          |
+| `mensajeError`                | `string`    | Mensaje de error si el estadoRetorno es diferente de 1.                                                 | `null`                       |
+
+
+---
+
+###  Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Débito realizado con éxito",
+        "data": {
+            "numeroDocumentoTransaccion": "NDSPI-20240220-0001",
+            "fechaContable": "2024-02-22",
+            "estadoRetorno": 1,
+            "mensajeError": null
+        }
+    }
+}
+```
+
+---
+
+###  Descripción de los Códigos de Error
+
+La función de débito puede retornar códigos de error numéricos específicos en el campo `codigo` de la respuesta y en el campo `estadoRetorno` del objeto `data`. A continuación, se describe el significado de cada código:
+
+| Código | Descripción                                      |
+|--------|--------------------------------------------------|
+| -2     | Cuenta no encontrada                             |
+| -3     | Saldo insuficiente                               |
+| -4     | No se pudo obtener la fecha                       |
+| -5     | No existe caja                                   |
+| -6     | No es posible actualizar el saldo en la cuenta   |
+| -7     | El monto a Retirar excede el limite permitido   |
+| -8     | No es posible actualizar el número de la transacción |
+| -9     | No existe transacción                             |
+| -10    | No es posible grabar la transacción              |
+| -11    | No es posible grabar la transacción              |
+| -12    | No es posible grabar el saldo en el detalle de la transacción |
+
+
+---
+
+### Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) no es proporcionado o tiene un formato incorrecto.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Invalid number format in headers",
+        "data": null
+    },
+    "message": "Invalid number format in headers",
+    "status": 400
+}
+```
+#### 500 Internal Server Error - Error al realizar el débito (Errores de la función)
+
+Si ocurre un error inesperado en el servidor o si la función de débito retorna un error específico (saldo insuficiente, cuenta no encontrada, etc.).
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "-2",
+        "mensajeFrontal": "Cuenta no encontrada",
+        "data": null
+    },
+    "message": "Cuenta no encontrada",
+    "status": 500
+}
+```
+
+#### 500 Internal Server Error - Error al realizar el débito (Errores de la función)
+
+Ejemplo de Respuesta de Error (Saldo Insuficiente):
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "-3",
+        "mensajeFrontal": "Saldo insuficiente",
+        "data": null
+    },
+    "message": "Saldo insuficiente",
+    "status": 500
+}
+```
+
+#### 500 Internal Server Error - Error al realizar el débito (Errores de la función)
+
+Ejemplo de Respuesta de Error (Error Interno):
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito",
+        "fechaMsj": "2025-02-21T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al realizar el débito: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al realizar el débito: Error en la base de datos",
+    "status": 500
+}
+```
+
+
+---
+
+### Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código** | **Descripción**                             | **Mensaje**                                                                               |
+|------------|---------------------------------------------|-------------------------------------------------------------------------------------------|
+| 400        | Solicitud inválida                           | Parámetros no proporcionados o formato inválido                                                                        |
+| (Código de error función) | Error función de débito       | Mensaje de error específico de la función (ver la sección "Descripción de los Códigos de Error")                   |
+| 500        | Error interno del servidor                 | Error al realizar el débito                                                         |
+
+
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado** | **Descripción**                                      |
+|----------------------|------------------------------------------------------|
+| 200 OK               | Débito realizado correctamente                     |
+| 400 Bad Request      | Parámetros no proporcionados o formato inválido |
+| 500 Internal Server Error | Error al realizar el débito |
+
+
+
+---
+
+###  Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   Todos los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) deben ser enviados en el header de la petición.
+*   La fecha debe estar en formato `YYYY-MM-DD`.
+
+---
+
+###  Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 123
+valorRetiro: 100.00
+fecha: 2024-02-22
+```
+
+
+
+
+
+
+
