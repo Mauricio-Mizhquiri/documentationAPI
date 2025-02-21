@@ -113,7 +113,7 @@ Para motivos de pruebas usar el **usuario:** admin y la **contraseña:** admin.
 
 ## **Respuesta Exitosa (200 OK)**
 
-Si las credenciales proporcionadas son válidas, se genera un **token JWT** y se devuelve en el cuerpo de la respuesta.
+Si las credenciales proporcionadas son válidas, se genera un **token JWT** y se devuelve en el cuerpo de la respuesta. Además se devuelve en segundos el tiempo de duración del token
 
 ### **Estructura de la Respuesta Exitosa**
 
@@ -128,7 +128,8 @@ Si las credenciales proporcionadas son válidas, se genera un **token JWT** y se
 ```json
 {
     "data": {
-        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczOTQwOTE5OSwiZXhwIjo...."
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc0MDEwMzk5NiwiZXhwIjoxNzQwMTA1Nzk2fQ.uqHASczP6ftIdeibel0x7RPn-wwNfqfTClUI_LfPFzU",
+        "expiration": 1800
     },
     "message": "OK",
     "status": 200
@@ -201,7 +202,7 @@ Si el usuario está inactivo y no tiene permisos para acceder al sistema.
 - **Descripción:** Este endpoint permite la autenticación del usuario con sus credenciales y la generación de un token JWT.
 - **Autorización:** No se requiere autorización previa (público).
 - **Formato de Respuesta:** `application/json`
-- **Formato de Solicitud:** `application/json`
+
 
 ## **Notas Adicionales**
 
@@ -222,9 +223,6 @@ Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 
 ## **5. POSICIÓN CONSOLIDADA**
-
-
-
 ### **5.1. Información del Usuario**
 
 
@@ -251,15 +249,17 @@ Este endpoint recibe los parámetros de autenticación que es el **Header** de l
 | **Nombre**   | **Tipo**   | **Descripción**                                   | **Obligatorio** |
 |--------------|------------|---------------------------------------------------|-----------------|
 | Token        | `string`   | Token de autenticación obtenido previamente en `/auth/authenticate`. Se debe enviar con el prefijo `Bearer`. | Sí |
+| idUser        | `string`   | Número de cédula del socio qe se esta buscando la información | Sí |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+id_user: 1101416319
 
 ```
 #### ***NOTA***
-EL Token se envia directamente en los parametros del header
+EL Token se envia directamente en los parametros del header, al igual que el id_user que en este caso es la cedula del usuario que se está buscando
 
 
 ---
@@ -290,27 +290,17 @@ Si la solicitud es exitosa y el usuario es encontrado, el sistema devuelve la in
 
 ```json
 {
-    "data": {
-        "idRespuesta": "0",
-        "originalIdServicio": "Obtener información de usuario",
-        "fechaMsj": "2025-02-12T20:41:07.965195900",
-        "estadoTransaccion": "OK",
-        "codigo": "0",
-        "mensajeFrontal": "DATOS ENVIADOS",
-        "data": {
-            "idUsuario": "canalweb",
-            "nombres": "JONATHAN XXXXXXXXXXX",
-            "primerApellido": "XXXXXXXXXX XXXXXXXXXX",
+   "data": {
+            "idUsuario": 1,
+            "nombres": "GALO XXXXXXXX",
+            "primerApellido": "AGUIRRE XXXXXXXXXXXX",
             "segundoApellido": null,
             "imagenUsuario": null,
-            "correo": "jhon2h@hotmail.es",
-            "celular": "0987184820",
+            "correo": "",
+            "celular": "0",
             "tipoSocio": "S",
-            "fechaNacimiento": "1987-05-24T05:00:00.000+00:00"
+            "fechaNacimiento": "1955-02-06T05:00:00.000+00:00"
         }
-    },
-    "message": "DATOS ENVIADOS",
-    "status": 200
 }
 ```
 
@@ -336,10 +326,10 @@ Si no se encuentra el usuario en la base de datos.
         "fechaMsj": "2025-02-12T20:43:40.103676200",
         "estadoTransaccion": "ERROR",
         "codigo": "500",
-        "mensajeFrontal": "Error al recuperar la información del usuario: Socio not found with code: 10000",
+        "mensajeFrontal": "Error al recuperar la información del usuario: Socio not found with code: 110xxxxxx",
         "data": null
     },
-    "message": "Error al recuperar la información del usuario: Socio not found with code: 10000",
+    "message": "Error al recuperar la información del usuario: Socio not found with code: 110xxxxxx",
     "status": 500
 }
 ```
@@ -397,10 +387,11 @@ Si ocurre un error inesperado en el servidor.
 
 ### **Ejemplo de Header para Solicitudes Posteriores:**
 
-Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un **Bearer Token** en el **Header** de la solicitud.
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un **Bearer Token** en el **Header** de la solicitud  además el idUser que en este caso es el número de cédula del socio a buscar.
 
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+id_user: 1101416319
 ```
 
 ---
@@ -431,18 +422,19 @@ Este endpoint recibe los parámetros de autenticación en el **Header** de la pe
 | **Nombre**   | **Tipo**   | **Descripción**                                   | **Obligatorio** |
 |--------------|------------|---------------------------------------------------|-----------------|
 | Token        | `string`   | Token de autenticación obtenido previamente en `/auth/authenticate`. Se debe enviar con el prefijo `Bearer`. | Sí |
+| idUser        | `string`   | Número de cédula del socio qe se esta buscando la información | Sí |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+id_user: 1101416319
 ```
 
 ---
 
 ### **Respuesta Exitosa**
 
-```markdown
 #### **Respuesta Exitosa (200 OK)**
 
 Si la solicitud es exitosa y el usuario tiene productos asociados, el sistema devolverá la información de cuentas, pólizas y créditos.
@@ -452,13 +444,6 @@ Si la solicitud es exitosa y el usuario tiene productos asociados, el sistema de
 ```json
 {
     "data": {
-        "idRespuesta": "0",
-        "originalIdServicio": "Obtener información de usuario",
-        "fechaMsj": "2025-02-12T21:26:56.795516600",
-        "estadoTransaccion": "OK",
-        "codigo": "0",
-        "mensajeFrontal": "Lista de productos obtenida exitosamente",
-        "data": {
             "lista_cuentas": [
             {
                     "codCuenta": 120,
@@ -529,7 +514,6 @@ Si la solicitud es exitosa y el usuario tiene productos asociados, el sistema de
                 }
             ]
         }
-    }
 }
 ```
 
@@ -659,10 +643,11 @@ Si ocurre un error inesperado en el servidor.
 
 ### **Ejemplo de Header para Solicitudes Posteriores:**
 
-Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un **Bearer Token** en el encabezado de la solicitud.
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un **Bearer Token** en el encabezado de la solicitud. Además se debe de eviar el idUser que en este caso es la cédula del socio.
 
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+id_user: 1101416319
 
 ```
 
@@ -722,19 +707,11 @@ La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-resp
 | `comprobante`   | `string` | Información del comprobante (si está disponible)                             |
 
 
-
 #### Ejemplo de Respuesta Exitosa
 
 ```json
 {
-    "data": {
-        "idRespuesta": "0",
-        "originalIdServicio": "obteneción de movimientos",
-        "fechaMsj": "2025-02-19T22:45:24.973004500",
-        "estadoTransaccion": "OK",
-        "codigo": "0",
-        "mensajeFrontal": "Movimientos obtenidos con éxito",
-        "data": [
+    "data": [
             {
                 "transaccion": "NC",
                 "concepto": "INTERES AHORRO A LA VISTA",
@@ -764,6 +741,7 @@ La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-resp
             ........
             ........
   ]
+        
 }
 ```
 ---
@@ -919,13 +897,6 @@ Si la solicitud es exitosa, el sistema devolverá la tabla de amortización corr
 ```json
 {
     "data": {
-        "idRespuesta": "0",
-        "originalIdServicio": "Obtener tabla de amortización",
-        "fechaMsj": "2025-02-12T21:45:56.795516600",
-        "estadoTransaccion": "OK",
-        "codigo": "0",
-        "mensajeFrontal": "Tabla de amortización obtenida exitosamente",
-        "data": {
             [
             {
                 "numeroCuota": 1,
@@ -969,9 +940,8 @@ Si la solicitud es exitosa, el sistema devolverá la tabla de amortización corr
             },
             ......
             ......
-            ......
+            ......]
         }
-    }
 }
 ```
 ### **Respuestas de Error**
@@ -1262,8 +1232,7 @@ idCredito: 12345
 
 ### Descripción
 
-Este endpoint obtiene la tabla de cuotas de un ahorro programado específico.
-
+Obtiene la tabla de cuotas de un ahorro programado específico, utilizando el código de producto y el número de identificación del cliente.
 
 ---
 
@@ -1279,20 +1248,48 @@ Este endpoint obtiene la tabla de cuotas de un ahorro programado específico.
 ### Parámetros de Solicitud
 
 📌 **Entrada:**
-Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y el `id_ahorro_programado` también en el Header.
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y los parámetros de búsqueda también en el Header.
 
-*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además el siguiente parámetro:
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
 
-    | Nombre                  | Tipo     | Descripción                                                                                             | Obligatorio | Ejemplo       |
-    |-------------------------|----------|---------------------------------------------------------------------------------------------------------|-------------|---------------|
-    | `idAhorroProgramado`    | `long`   | Identificador del ahorro programado para obtener la tabla de cuotas. | Sí          | `12345`         |
+    | Nombre          | Tipo     | Descripción                                                                                                        | Obligatorio | Ejemplo       |
+    |-----------------|----------|--------------------------------------------------------------------------------------------------------------------|-------------|---------------|
+    | `codProducto`   | `long`   | Código del producto de ahorro programado.                                                                        | Sí          | `1`           |
+    | `numId`         | `string` | Número de identificación (cédula) del cliente.                                                                    | Sí          | `1717171717`  |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
 ```http
 Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-idAhorroProgramado: 12345
+codProducto: 1
+numId: 1717171717
 ```
+
+
+
+---
+
+### Descripción de los Códigos de Producto
+
+El parámetro `codProducto` identifica el tipo de producto al que corresponde el ahorro programado. A continuación, se describen los valores posibles:
+
+| Código | Descripción                                        |
+|--------|----------------------------------------------------|
+| 1      | AHORROS A LA VISTA                               |
+| 2      | CERTIFICADOS DE APORTACION                         |
+| 3      | OPERACIONES DE CAJA                              |
+| 4      | DEPOSITO A PLAZO                                 |
+| 5      | CREDITO                                          |
+| 6      | AHORRO ENCAJE                                    |
+| 7      | AHORRO PROGRAMADO                                |
+| 8      | AHORRO INFANTIL                                  |
+| 9      | AHORRO PERSONAL                                  |
+| 10     | AHORRO NAVIDEÑO                                  |
+| 11     | RECAUDACION INSTITUCIONES PUBLICAS               |
+| 12     | AHORRO DORADO                                    |
+| 13     | AHORRO PROFESIONAL                               |
+| 14     | CUENTA DE INVERSION                               |
+
 
 
 **Ejemplo de Solicitud**
@@ -1310,8 +1307,7 @@ idAhorroProgramado: 12345
 
 http://190.123.34.157:8000/ahorroProgramado
 
-**Nota:** El `idAhorroProgramado` se extrae del parámetro que se envía en el header.
-
+**Nota:** El `codProducto` y `numId` se extraen de los parámetros que se envían en el header.
 
 
 ---
