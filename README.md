@@ -2952,7 +2952,7 @@ Se realiza una devolución (acreditación) de dinero al socio en caso de algún 
 #### **Detalles del Endpoint**
 
 - **Método HTTP:** `POST`
-- `http://190.123.34.157:8000/reverso`
+- `http://190.123.34.157:8000/reversos`
 - **Token:** Requiere token JWT
 - **Formato de Solicitud:** `application/json` (a través de headers)
 ****
