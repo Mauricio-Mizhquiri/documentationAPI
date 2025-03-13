@@ -2966,10 +2966,10 @@ Este endpoint recibe los parámetros necesarios para realizar el reverso a trav�
 | **Nombre**       | **Tipo** | **Descripción**                                                                 | **Obligatorio** | **Ejemplo**    |
 | ---------------- | -------- | ------------------------------------------------------------------------------- | --------------- | -------------- |
 | `Token`          | `string` | Token de autenticación (Bearer Token).  Ejemplo: `Bearer eyJhbGciOiJIUzI1Ni...` | Sí              | `Bearer ...`   |
-| `codProducto`    | `string` | Código del producto asociado a la transacción.                                  | Sí              | `"12345"`      |
+| `codProducto`    | `string` | Código del producto asociado a la transacción.                                  | Sí              | `"1`      |
 | `montoAcreditar` | `string` | Monto a acreditar en la cuenta destino.                                         | Sí              | `"100.50"`     |
-| `fechaContable`  | `string` | Fecha contable de la transacción (formato: `yyyy-MM-dd`).                       | Sí              | `"2024-01-01"` |
-| `cuentaDestino`  | `string` | Número de cuenta destino a la cual se realizará el reverso.                     | Sí              | `"0123456789"` |
+| `fechaContable`  | `string` | Fecha contable de la transacción (formato: `yyyy-MM-dd`).                       | Sí              | `"2025-03-11"` |
+| `cuentaDestino`  | `string` | Número de cuenta destino a la cual se realizará el reverso.                     | Sí              | `"1"` |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
@@ -3006,7 +3006,7 @@ Si la acreditación se realiza exitosamente, el sistema devuelve la información
 {
     "data": {
         "idRespuesta": "0",
-        "originalIdServicio": realizar reverso,
+        "originalIdServicio": "realizar reverso",
         "fechaMsj": "2025-03-12T21:09:55.952633300",
         "estadoTransaccion": "OK",
         "codigo": "0",
