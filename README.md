@@ -2054,6 +2054,277 @@ cuentaDestino: 2
 
 
 
+### **5.3.2. POST /TransferenciaExterna**
+
+---
+
+### Descripción
+
+Realiza un débito en la cuenta del socio para una transferencia externa. Este endpoint solo realiza el débito, validando montos y cupos diarios, pero no completa la transferencia externa.
+
+---
+
+### Detalles del Endpoint
+
+*   **Método HTTP:** `POST`
+*    **URL:** `http://190.123.34.157:8000/TransferenciaExterna`
+*   **Token:** Requiere token JWT en el [Header común de la API](#21-header-en-las-peticiones).
+*   **Formato de Respuesta:** `application/json`
+
+
+
+
+---
+
+### Parámetros de Solicitud
+
+📌 **Entrada:**
+
+Este endpoint recibe los parámetros de autenticación en el **Header** de la petición y los datos del débito (para la transferencia externa) como atributos en el Header.
+
+*   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
+
+    | Nombre        | Tipo     | Descripción                                                                    | Obligatorio | Ejemplo        |
+    | ------------- | -------- | ------------------------------------------------------------------------------ | ----------- | -------------- |
+    | `Token`       | `string` | Token de autenticación (Bearer Token). Ejemplo: `Bearer eyJhbGciOiJIUzI1Ni...` | Si          | `Bearer ...`   |
+    | `codProducto` | `string` | Código del producto de la cuenta origen.                                       | Sí          | `"1"`          |
+    | `codCuenta`   | `string` | Número de la cuenta origen a debitar.                                          | Sí          | `"1"` |
+    | `valorRetiro` | `string` | Monto a debitar para la transferencia externa.                                 | Sí          | `"100.00"`     |
+    | `fecha`       | `string` | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                      | Sí          | `"2025-03-11"` |
+
+📌 **Ejemplo de Header en la Solicitud:**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 1
+valorRetiro: 100.00
+fecha: 2024-03-13
+```
+
+
+
+**Sección 3: Ejemplo de Solicitud**
+
+---
+
+### Ejemplo de Solicitud
+
+**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
+
+**Ejemplo de URL:**
+
+http://190.123.34.157:8000/TransferenciaExterna
+
+**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) se extraen de los parámetros que se envían en el header.
+
+---
+
+###  Estructura de la Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+Si el débito para la transferencia externa se realiza con éxito, el sistema devolverá la información de confirmación del débito.
+
+##### Estructura de la Respuesta Exitosa
+
+La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información de confirmación del débito:
+
+| Nombre                       | Tipo      | Descripción                                                                             | Ejemplo               |
+| ---------------------------- | --------- | --------------------------------------------------------------------------------------- | --------------------- |
+| `numeroDocumentoTransaccion` | `string`  | Número de documento de la transacción de débito realizada.                              | `NDSPI-20240223-0001` |
+| `fechaContable`              | `string`  | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                               | `2024-02-23`          |
+| `estadoRetorno`              | `integer` | Estado de retorno de la función (1: Éxito, otros valores indican error).                | `1`                   |
+| `mensajeError`               | `string`  | Mensaje de error si `estadoRetorno` es diferente de 1. Nulo si la operación es exitosa. | `null`                |
+
+
+---
+
+### Ejemplo de Respuesta Exitosa
+
+#### Respuesta Exitosa (200 OK)
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": null,
+        "fechaMsj": "2025-03-12T22:22:07.203891200",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Desacreditación realizada con éxito",
+        "data": {
+            "numeroDocumentoTransaccion": "NDSPI-Wed Mar 12 22:22:07 ECT 2025-0001",
+            "fechaContable": "2025-03-13T03:22:07.203+00:00",
+            "estadoRetorno": 1,
+            "mensajeError": null
+        }
+    },
+    "message": "Desacreditación realizada con éxito",
+    "status": 200
+}
+```
+
+
+
+**Sección 6: Descripción de los Códigos de Error**
+
+---
+
+###  Descripción de los Códigos de Error
+
+La función de débito puede retornar códigos de error numéricos específicos en el campo `codigo` de la respuesta y en el campo `estadoRetorno` del objeto `data`. A continuación, se describe el significado de cada código:
+
+| Código | Descripción                                                   |
+| ------ | ------------------------------------------------------------- |
+| -2     | Cuenta no encontrada                                          |
+| -3     | Saldo insuficiente                                            |
+| -4     | No se pudo obtener la fecha                                   |
+| -5     | No existe caja                                                |
+| -6     | No es posible actualizar el saldo en la cuenta                |
+| -7     | El monto a Retirar excede el limite permitido                 |
+| -8     | No es posible actualizar el número de la transacción          |
+| -9     | No existe transacción                                         |
+| -10    | No es posible grabar la transacción                           |
+| -11    | No es posible grabar la transacción                           |
+| -12    | No es posible grabar el saldo en el detalle de la transacción |
+
+
+---
+
+### Respuestas de Error
+
+#### Respuestas de Error
+
+Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). Ejemplos:
+
+#### 400 Bad Request - Parámetros de solicitud inválidos
+
+Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) no es proporcionado o tiene un formato incorrecto.
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito transferencia externa",
+        "fechaMsj": "2025-02-23T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Invalid number format in headers",
+        "data": null
+    },
+    "message": "Invalid number format in headers",
+    "status": 400
+}
+```
+
+
+
+#### 500 Internal Server Error - Error al realizar el débito (Errores de la función)
+
+Si ocurre un error inesperado en el servidor o si la función de débito retorna un error específico (saldo insuficiente, cuenta no encontrada, etc.).
+
+**Ejemplo de Respuesta de Error (Cuenta no encontrada)**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito transferencia externa",
+        "fechaMsj": "2025-02-23T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "-2",
+        "mensajeFrontal": "Cuenta no encontrada",
+        "data": null
+    },
+    "message": "Cuenta no encontrada",
+    "status": 500
+}
+```
+
+#### 500 Internal Server Error - Error al realizar el débito (Error Interno)
+
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "realizar debito transferencia externa",
+        "fechaMsj": "2025-02-23T10:00:00.000+00:00",
+        "estadoTransaccion": "ERROR",
+        "codigo": "500",
+        "mensajeFrontal": "Error al realizar el débito: Error en la base de datos",
+        "data": null
+    },
+    "message": "Error al realizar el débito: Error en la base de datos",
+    "status": 500
+}
+```
+
+
+**Sección 8: Excepciones Comunes y Códigos de Estado**
+
+---
+
+### Excepciones Comunes y Códigos de Estado
+
+#### Excepciones Comunes:
+
+| **Código**                | **Descripción**            | **Mensaje**                                                                                      |
+| ------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
+| 400                       | Solicitud inválida         | Parámetros no proporcionados o formato inválido                                                  |
+| (Código de error función) | Error función de débito    | Mensaje de error específico de la función (ver la sección "Descripción de los Códigos de Error") |
+| 500                       | Error interno del servidor | Error al realizar el débito                                                                      |
+
+---
+
+#### Códigos de Estado HTTP
+
+| **Código de Estado**      | **Descripción**                                           |
+| ------------------------- | --------------------------------------------------------- |
+| 200 OK                    | Débito realizado correctamente para transferencia externa |
+| 400 Bad Request           | Parámetros no proporcionados o formato inválido           |
+| 500 Internal Server Error | Error al realizar el débito                               |
+
+
+---
+
+### Notas Adicionales
+
+*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
+*   Todos los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) deben ser enviados en el header de la petición.
+*   La fecha debe estar en formato `YYYY-MM-DD`.
+
+
+---
+
+### Ejemplo de Header para Solicitudes Posteriores
+
+Cuando se haga una solicitud a este endpoint, recuerda incluir el token de autenticación obtenido en el endpoint `/auth/authenticate` como un Token en el encabezado de la solicitud.
+
+#### Header de la Solicitud:
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+codCuenta: 123
+valorRetiro: 100.00
+fecha: 2024-02-23
+```
+
+
+
+
+
+
+
+
+
+
+
+
 ### **5.4.1. Listar IFIs**
 
 ---
@@ -2674,6 +2945,131 @@ fecha: 2024-02-22
 
 
 
+### **5.5.2. POST /reversos**
+
+Se realiza una devolución (acreditación) de dinero al socio en caso de algún error en la transacción que se esta realizando.
+
+#### **Detalles del Endpoint**
+
+- **Método HTTP:** `POST`
+- `http://190.123.34.157:8000/reverso`
+- **Token:** Requiere token JWT
+- **Formato de Solicitud:** `application/json` (a través de headers)
+****
 
 
+#### **Parámetros de Solicitud**
+
+📌 **Entrada:**
+Este endpoint recibe los parámetros necesarios para realizar el reverso a través de los **Headers** de la petición.
+
+| **Nombre**       | **Tipo** | **Descripción**                                                                 | **Obligatorio** | **Ejemplo**    |
+| ---------------- | -------- | ------------------------------------------------------------------------------- | --------------- | -------------- |
+| `Token`          | `string` | Token de autenticación (Bearer Token).  Ejemplo: `Bearer eyJhbGciOiJIUzI1Ni...` | Sí              | `Bearer ...`   |
+| `codProducto`    | `string` | Código del producto asociado a la transacción.                                  | Sí              | `"12345"`      |
+| `montoAcreditar` | `string` | Monto a acreditar en la cuenta destino.                                         | Sí              | `"100.50"`     |
+| `fechaContable`  | `string` | Fecha contable de la transacción (formato: `yyyy-MM-dd`).                       | Sí              | `"2024-01-01"` |
+| `cuentaDestino`  | `string` | Número de cuenta destino a la cual se realizará el reverso.                     | Sí              | `"0123456789"` |
+
+📌 **Ejemplo de Header en la Solicitud:**
+
+```http
+Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+codProducto: 1
+montoAcreditar: 100.50
+cuentaDestino: 1
+fechaContable: 2025-03-11
+```
+
+
+**Sección 3: Respuesta Exitosa**
+
+### **Respuesta Exitosa**
+
+#### **Respuesta Exitosa (200 OK)**
+
+Si la acreditación se realiza exitosamente, el sistema devuelve la información de la transacción.
+
+#### **Estructura de la Respuesta Exitosa:**
+
+| **Nombre**                   | **Tipo**  | **Descripción**                                                            |
+| ---------------------------- | --------- | -------------------------------------------------------------------------- |
+| `estadoRetornoCredito`       | `integer` | Código de estado del resultado de la acreditación. `1` indica éxito.       |
+| `mensajeError`               | `string`  | Mensaje descriptivo del resultado de la operación.  Vacío si es exitoso.   |
+| `numeroDocumentoTransaccion` | `string`  | Número de documento asociado a la transacción de reverso.                  |
+| `fechaContable`              | `string`  | Fecha contable de la transacción (formato: `yyyy-MM-ddTHH:mm:ss.SSSZ`).    |
+| ... (Otros campos)           | ...       | Pueden existir otros campos dependiendo de la implementación del servicio. |
+
+#### **Ejemplo de Respuesta Exitosa:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": realizar reverso,
+        "fechaMsj": "2025-03-12T21:09:55.952633300",
+        "estadoTransaccion": "OK",
+        "codigo": "0",
+        "mensajeFrontal": "Acreditación realizada con éxito",
+        "data": {
+            "numeroDocumentoTransaccion": "ACREDITA-Wed Mar 12 00:00:00 ECT 2025-0001",
+            "fechaContable": "2025-03-12T05:00:00.000+00:00",
+            "estadoRetornoDebito": null,
+            "estadoRetornoCredito": 1,
+            "mensajeError": null
+        }
+    },
+    "message": "Acreditación realizada con éxito",
+    "status": 200
+}
+```
+
+#### 500 Internal Server Error - Error en la Acreditación
+
+Si ocurre un error interno en el servicio al intentar realizar la acreditación (ej: falla la conexión a la base de datos, ocurre una excepción no controlada en el servicio).
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+  "data": null,
+  "message": "Error en la acreditación: [Mensaje de error específico]",
+  "status": 500
+}
+```
+
+
+**Sección 5: Excepciones Comunes y Códigos de Estado**
+
+---
+
+### **Excepciones Comunes y Códigos de Estado**
+
+#### **Excepciones Comunes:**
+
+| **Código** | **Descripción**            | **Mensaje**                                     |
+| ---------- | -------------------------- | ----------------------------------------------- |
+| `400`      | Parámetros inválidos       | `Formato de número inválido`                    |
+| `500`      | Error interno del servidor | `Error en la acreditación: [Mensaje detallado]` |
+
+---
+
+#### **Códigos de Estado HTTP:**
+
+| **Código de Estado**        | **Descripción**                                |
+| --------------------------- | ---------------------------------------------- |
+| `200 OK`                    | Acreditación realizada correctamente.          |
+| `400 Bad Request`           | Uno o más parámetros de entrada son inválidos. |
+| `500 Internal Server Error` | Error al realizar la acreditación.             |
+
+
+---
+
+#### **Notas Adicionales**
+
+- **Autenticación:** Se requiere un token JWT válido en el encabezado `Token` de la solicitud.
+
+- **Manejo de Errores:**  Es importante revisar el campo `mensajeError` en las respuestas de error para obtener información más detallada sobre la causa del fallo.
+
+---
 
