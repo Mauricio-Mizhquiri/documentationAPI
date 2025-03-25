@@ -2164,7 +2164,7 @@ La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-resp
 | `codTipoCuentaRecibe` | Tipo de cuenta del receptor                                  | Long       | Sí        |
 | `nomBeneficiario`     | Nombre del beneficiario                                      | String     | Sí        |
 | `numIdBeneficiario`   | Número de identificación del beneficiario                    | String     | Sí        |
-| `txtInstrucciones`    | Instrucciones adicionales para la transferencia (opcional)   | String     | No        |
+| `txtInstrucciones`    | Instrucciones adicionales para la transferencia              | String     | Si        |
 
 
 ---
