@@ -2134,13 +2134,6 @@ fecha: 2024-03-13
 ```
 
 
-
-**Ejemplo de Solicitud**
-
----
-
-**Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
-
 **Ejemplo de URL:**
 
 http://190.123.34.157:8000/TransferenciaExterna
