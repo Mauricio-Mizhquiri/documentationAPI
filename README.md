@@ -2095,8 +2095,6 @@ Realiza transferencias externas entre cuentas de diferentes bancos, incluyendo v
 *   **Formato de Respuesta:** `application/json`
 
 
-
-
 ---
 
 ### Parámetros de Solicitud
@@ -2107,13 +2105,20 @@ Este endpoint recibe los parámetros de autenticación en el **Header** de la pe
 
 *   **Header:** Ver la definición en [Header común de la API](#21-header-en-las-peticiones). El Header debe incluir el token JWT para la autenticación, además los siguientes parámetros:
 
-    | Nombre        | Tipo     | Descripción                                                                    | Obligatorio | Ejemplo        |
-    | ------------- | -------- | ------------------------------------------------------------------------------ | ----------- | -------------- |
-    | `Token`       | `string` | Token de autenticación (Bearer Token). Ejemplo: `Bearer eyJhbGciOiJIUzI1Ni...` | Si          | `Bearer ...`   |
-    | `codProducto` | `string` | Código del producto de la cuenta origen.                                       | Sí          | `"1"`          |
-    | `codCuenta`   | `string` | Número de la cuenta origen a debitar.                                          | Sí          | `"1"` |
-    | `valorRetiro` | `string` | Monto a debitar para la transferencia externa.                                 | Sí          | `"100.00"`     |
-    | `fecha`       | `string` | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                      | Sí          | `"2025-03-11"` |
+    | Nombre                   | Descripción                                                                    | Obligatorio | Ejemplo        |
+    | -------------------------| ------------------------------------------------------------------------------ | ----------- | -------------- |
+    | `Token`                  | Token de autenticación (Bearer Token). Ejemplo: `Bearer eyJhbGciOiJIUzI1Ni...` | Si          | `Bearer ...`   |
+    | `codProducto`            | Código del producto de la cuenta origen.                                       | Sí          | `"1"`          |
+    | `codCuenta`              | Número de la cuenta origen a debitar.                                          | Sí          | `"1"` |
+    | `valorRetiro`            | Monto a debitar para la transferencia externa.                                 | Sí          | `"100.00"`     |
+    | `fecha`                  | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                      | Sí          | `"2025-03-11"` |
+    | `codBancoRecibe`         | Código del banco receptor                                                      | Sí          | 1              |
+    | `codCuentaRecibe`        | Código de la cuenta receptora                                                  | Sí          | 1              | 
+    | `codTipoCuentaEnvia`     | Tipo de cuenta del remitente                                                   | Sí          | 1              |
+    | `codTipoCuentaRecibe`    | Tipo de cuenta del receptor                                                    | Sí          | 1              |
+    | `nomBeneficiario`        | Nombre del beneficiario                                                        | Sí          | Juan Perez     |
+    | `numIdBeneficiario`      | Número de identificación del beneficiario                                      | Sí          | 03xxxxxxxxx    |
+    | `txtInstrucciones`       | Instrucciones adicionales para la transferencia                                | Sí          | "Motivo x"     |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
@@ -2123,6 +2128,9 @@ codProducto: 1
 codCuenta: 1
 valorRetiro: 100.00
 fecha: 2024-03-13
+''''''''''''''''''
+'''''''''''''''''
+'''''''''''''''''
 ```
 
 
@@ -2131,41 +2139,23 @@ fecha: 2024-03-13
 
 ---
 
-### Ejemplo de Solicitud
-
 **Header:** (Consulta la definición en [Header común de la API](#21-header-en-las-peticiones))
 
 **Ejemplo de URL:**
 
 http://190.123.34.157:8000/TransferenciaExterna
 
-**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) se extraen de los parámetros que se envían en el header.
+**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `codBancoRecibe`, `codCuentaRecibe`, `codTipoCuentaEnvia`, `codTipoCuentaRecibe`, `nomBeneficiario`, `numIdBeneficiario`, `txtInstrucciones`)  se extraen de los parámetros que se envían en el header.
 
 ---
 
-###  Estructura de la Respuesta Exitosa
 
 #### Respuesta Exitosa (200 OK)
 
 Si el débito para la transferencia externa se realiza con éxito, el sistema devolverá la información de confirmación del débito.
 
-##### Estructura de la Respuesta Exitosa
 
 La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información de confirmación del débito:
-
-| Nombre del parámetro  | Descripción                                                  | Tipo       | Requerido |
-| --------------------- | ------------------------------------------------------------ | ---------- | --------- |
-| `codProducto`         | Código del producto asociado a la cuenta                     | Long       | Sí        |
-| `codCuenta`           | Código de la cuenta desde la que se realiza la transferencia | Long       | Sí        |
-| `valorRetiro`         | Monto a transferir                                           | BigDecimal | Sí        |
-| `codBancoRecibe`      | Código del banco receptor                                    | Long       | Sí        |
-| `codCuentaRecibe`     | Código de la cuenta receptora                                | Long       | Sí        |
-| `codTipoCuentaEnvia`  | Tipo de cuenta del remitente                                 | Long       | Sí        |
-| `codTipoCuentaRecibe` | Tipo de cuenta del receptor                                  | Long       | Sí        |
-| `nomBeneficiario`     | Nombre del beneficiario                                      | String     | Sí        |
-| `numIdBeneficiario`   | Número de identificación del beneficiario                    | String     | Sí        |
-| `txtInstrucciones`    | Instrucciones adicionales para la transferencia              | String     | Si        |
-
 
 ---
 
@@ -2196,7 +2186,7 @@ La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-resp
 
 
 
-**Sección 6: Descripción de los Códigos de Error**
+**Descripción de los Códigos de Error**
 
 ---
 
@@ -2229,7 +2219,7 @@ Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun
 
 #### 400 Bad Request - Parámetros de solicitud inválidos
 
-Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) no es proporcionado o tiene un formato incorrecto.
+Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `codBancoRecibe`, `codCuentaRecibe`, `codTipoCuentaEnvia`, `codTipoCuentaRecibe`, `nomBeneficiario`, `numIdBeneficiario`, `txtInstrucciones`) no es proporcionado o tiene un formato incorrecto.
 
 **Ejemplo de Respuesta de Error:**
 
