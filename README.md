@@ -2054,13 +2054,36 @@ cuentaDestino: 2
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### **5.3.2. POST /TransferenciaExterna**
 
 ---
 
 ### Descripción
 
-Realiza un débito en la cuenta del socio para una transferencia externa. Este endpoint solo realiza el débito, validando montos y cupos diarios, pero no completa la transferencia externa.
+Realiza transferencias externas entre cuentas de diferentes bancos, incluyendo validación de saldos y registro completo de la operación.
+(Solo se realiza el debito de la cuenta que envía más no se realiza la transferencia a la cuenta de destino "Se ha acordado realizar de esa manera")
 
 ---
 
@@ -2104,7 +2127,7 @@ fecha: 2024-03-13
 
 
 
-**Sección 3: Ejemplo de Solicitud**
+**Ejemplo de Solicitud**
 
 ---
 
@@ -2130,12 +2153,18 @@ Si el débito para la transferencia externa se realiza con éxito, el sistema de
 
 La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-respuestas). El campo `data` contiene la información de confirmación del débito:
 
-| Nombre                       | Tipo      | Descripción                                                                             | Ejemplo               |
-| ---------------------------- | --------- | --------------------------------------------------------------------------------------- | --------------------- |
-| `numeroDocumentoTransaccion` | `string`  | Número de documento de la transacción de débito realizada.                              | `NDSPI-20240223-0001` |
-| `fechaContable`              | `string`  | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                               | `2024-02-23`          |
-| `estadoRetorno`              | `integer` | Estado de retorno de la función (1: Éxito, otros valores indican error).                | `1`                   |
-| `mensajeError`               | `string`  | Mensaje de error si `estadoRetorno` es diferente de 1. Nulo si la operación es exitosa. | `null`                |
+| Nombre del parámetro  | Descripción                                                  | Tipo       | Requerido |
+| --------------------- | ------------------------------------------------------------ | ---------- | --------- |
+| `codProducto`         | Código del producto asociado a la cuenta                     | Long       | Sí        |
+| `codCuenta`           | Código de la cuenta desde la que se realiza la transferencia | Long       | Sí        |
+| `valorRetiro`         | Monto a transferir                                           | BigDecimal | Sí        |
+| `codBancoRecibe`      | Código del banco receptor                                    | Long       | Sí        |
+| `codCuentaRecibe`     | Código de la cuenta receptora                                | Long       | Sí        |
+| `codTipoCuentaEnvia`  | Tipo de cuenta del remitente                                 | Long       | Sí        |
+| `codTipoCuentaRecibe` | Tipo de cuenta del receptor                                  | Long       | Sí        |
+| `nomBeneficiario`     | Nombre del beneficiario                                      | String     | Sí        |
+| `numIdBeneficiario`   | Número de identificación del beneficiario                    | String     | Sí        |
+| `txtInstrucciones`    | Instrucciones adicionales para la transferencia (opcional)   | String     | No        |
 
 
 ---
@@ -2220,6 +2249,27 @@ Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`
 }
 ```
 
+#### 400 Bad Request - Error en parámetros
+
+Si alguno de los parámetros no se encuentra
+
+**Ejemplo de Respuesta de Error:**
+
+```json
+{
+    "data": {
+        "idRespuesta": "0",
+        "originalIdServicio": "Obtener información de usuario",
+        "fechaMsj": "2025-03-24T20:41:34.395037400",
+        "estadoTransaccion": "ERROR",
+        "codigo": "400",
+        "mensajeFrontal": "Parámetro requerido faltante: numIdBeneficiario",
+        "data": null
+    },
+    "message": "Parámetro requerido faltante: numIdBeneficiario",
+    "status": 400
+}
+```
 
 
 #### 500 Internal Server Error - Error al realizar el débito (Errores de la función)
@@ -2264,7 +2314,7 @@ Si ocurre un error inesperado en el servidor o si la función de débito retorna
 ```
 
 
-**Sección 8: Excepciones Comunes y Códigos de Estado**
+** Excepciones Comunes y Códigos de Estado**
 
 ---
 
@@ -2293,10 +2343,9 @@ Si ocurre un error inesperado en el servidor o si la función de débito retorna
 
 ### Notas Adicionales
 
-*   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
-*   Todos los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) deben ser enviados en el header de la petición.
+*   Asegúrate de incluir un token JWT válido en el campo `Authorization` del [Header](#21-header-en-las-peticiones).
+*   Todos los datos de la transferencia externa (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `codBancoRecibe`, `codCuentaRecibe`, `codTipoCuentaEnvia`, `codTipoCuentaRecibe`, `nomBeneficiario`, `numIdBeneficiario`, `txtInstrucciones`) deben ser enviados en el body de la solicitud, no en el header.
 *   La fecha debe estar en formato `YYYY-MM-DD`.
-
 
 ---
 
@@ -2307,21 +2356,21 @@ Cuando se haga una solicitud a este endpoint, recuerda incluir el token de auten
 #### Header de la Solicitud:
 
 ```http
-Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-codProducto: 1
-codCuenta: 123
-valorRetiro: 100.00
-fecha: 2024-02-23
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+codProducto: 1  
+codCuenta: 123  
+valorRetiro: 100.00  
+fecha: 2024-02-23  
+codBancoRecibe: 456  
+codCuentaRecibe: 789  
+codTipoCuentaEnvia: 1  
+codTipoCuentaRecibe: 2  
+nomBeneficiario: Juan Pérez  
+numIdBeneficiario: 1234567890  
+txtInstrucciones: Transferencia para pago de servicios  
+
 ```
-
-
-
-
-
-
-
-
-
 
 
 
