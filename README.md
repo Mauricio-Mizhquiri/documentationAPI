@@ -2116,8 +2116,8 @@ Este endpoint recibe los parámetros de autenticación en el **Header** de la pe
     | `codCuentaRecibe`        | Código de la cuenta receptora                                                  | Sí          | 1              | 
     | `codTipoCuentaEnvia`     | Tipo de cuenta del remitente                                                   | Sí          | 1              |
     | `codTipoCuentaRecibe`    | Tipo de cuenta del receptor                                                    | Sí          | 1              |
-    | `nomBeneficiario`        | Nombre del beneficiario                                                        | Sí          | `Juan Perez`   |
-    | `numIdBeneficiario`      | Número de identificación del beneficiario                                      | Sí          | `03xxxxxxxxx`  |
+    | `nomBeneficiario`        | Nombre del beneficiario                                                        | Sí          | `"Juan Perez"` |
+    | `numIdBeneficiario`      | Número de identificación del beneficiario                                      | Sí          | `"03xxxxxxxxx"`|
     | `txtInstrucciones`       | Instrucciones adicionales para la transferencia                                | Sí          | `"Motivo x"`   |
 
 📌 **Ejemplo de Header en la Solicitud:**
