@@ -1,6 +1,4 @@
-// documentacion Api canales digitales
 # 📡 Canales Electrónicos
-
 ## 1️⃣ Estándar de Mensajería
 
 El estándar **ISO 20022** es utilizado para el intercambio electrónico de datos entre instituciones financieras. Este estándar permite manejar datos complejos como:
