@@ -2733,6 +2733,7 @@ Este endpoint recibe los parámetros de autenticación en el **Header** de la pe
     | `codCuenta`      | `long`    | Número de cuenta a la cual se realizará el débito.                                                           | Sí          | `1234567890`       |
     | `valorRetiro`     | `decimal` | Monto a debitar.                                                                                             | Sí          | `100.00`           |
     | `fecha`           | `string`  | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                                   | Sí          | `2024-02-22`       |
+    | `valorComision`   | `decimal` |Monto a debitar                                                                                              | Sí          | `0.49`       |
 
 📌 **Ejemplo de Header en la Solicitud:**
 
@@ -2742,6 +2743,7 @@ codProducto: 1
 codCuenta: 1234567890
 valorRetiro: 100.00
 fecha: 2024-02-22
+valorComision: 0.49
 ```
 
 
@@ -2759,7 +2761,7 @@ http://190.123.34.157:8000/debitos
 
 
 
-**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) se extraen de los parámetros que se envían en el header.
+**Nota:** Los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `valorComision`) se extraen de los parámetros que se envían en el header.
 
 ---
 
@@ -2777,7 +2779,7 @@ La respuesta sigue la estructura [RespuestaComun](#22-respuestacomun-en-las-resp
 |-------------------------------|-------------|--------------------------------------------------------------------------------------------------------|------------------------------|
 | `numeroDocumentoTransaccion`  | `string`    | Número de documento de la transacción realizada.                                                        | `NDSPI-20240220-0001`      |
 | `fechaContable`               | `string`    | Fecha contable de la transacción (formato: `YYYY-MM-DD`).                                              | `2024-02-20`                 |
-| `estadoRetorno`         | `integer`   | Estado de retorno de la función (1: Éxito, otros valores indican error).                                | `1`                          |
+| `estadoRetorno`               | `integer`   | Estado de retorno de la función (1: Éxito, otros valores indican error).                                | `1`                          |
 | `mensajeError`                | `string`    | Mensaje de error si el estadoRetorno es diferente de 1.                                                 | `null`                       |
 
 
@@ -2837,7 +2839,7 @@ Las respuestas de error siguen la estructura [RespuestaComun](#22-respuestacomun
 
 #### 400 Bad Request - Parámetros de solicitud inválidos
 
-Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) no es proporcionado o tiene un formato incorrecto.
+Si alguno de los parámetros (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `valorComision`) no es proporcionado o tiene un formato incorrecto.
 
 **Ejemplo de Respuesta de Error:**
 
@@ -2954,7 +2956,7 @@ Ejemplo de Respuesta de Error (Error Interno):
 ###  Notas Adicionales
 
 *   Asegúrate de incluir un token JWT válido en el campo `token` del [Header](#21-header-en-las-peticiones).
-*   Todos los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`) deben ser enviados en el header de la petición.
+*   Todos los datos del débito (`codProducto`, `codCuenta`, `valorRetiro`, `fecha`, `valorComision`) deben ser enviados en el header de la petición.
 *   La fecha debe estar en formato `YYYY-MM-DD`.
 
 ---
@@ -2971,6 +2973,7 @@ codProducto: 1
 codCuenta: 123
 valorRetiro: 100.00
 fecha: 2024-02-22
+valorComision: 0.49
 ```
 
 
